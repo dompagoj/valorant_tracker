@@ -1,0 +1,4 @@
+{
+  "logs": { "mode": true, "show": false },
+  "val-api": { "local": { "mode": true, "lockfile": "undefined/Riot Games/Riot Client/Config/lockfile" } }
+}

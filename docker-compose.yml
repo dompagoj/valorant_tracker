@@ -1,0 +1,24 @@
+version: "3.9"
+services:
+  web:
+    container_name: valorant_dotnet_app
+    build: dotnet_app
+    volumes:
+      - ./Logs:/logs
+    environment:
+      - NodeUrl=http://node_app:5000
+      - LogsPath=/logs
+    env_file:
+      - dotnet_app/secrets.env
+    ports:
+      - "9025:80"
+    depends_on:
+      - node_app
+
+  node_app:
+    container_name: valorant_node_app
+    build: node_script
+    env_file:
+      - node_script/secrets.env
+    environment:
+      - PORT=5000

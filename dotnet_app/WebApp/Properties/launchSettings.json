@@ -1,0 +1,15 @@
+﻿{
+  "profiles": {
+    "WebApp": {
+      "commandName": "Project",
+      "dotnetRunMessages": true,
+      "launchBrowser": false,
+      "applicationUrl": "http://localhost:5000",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "NODE_SCRIPT_PATH": "/home/domagoj/dev/valorant_elderflame_tracker/node_script",
+        "RIOT_USERNAME": "domp4"
+      }
+    }
+  }
+}
