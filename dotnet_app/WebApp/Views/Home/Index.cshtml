@@ -2,24 +2,28 @@
 
 <div class="container">
 
-  <div>
-    <h1>Offers: </h1>
-    @foreach (var item in @Model.Offers)
-    {
-      <p>@item.Id</p>
-      <p>@item.Name</p>
-      <img class="gun_img" src="@item.ImageUrl"/>
-    }
-  </div>
+  <h1 class="title">Elderflame awp, tarik vandal, Elderflame vandal waiting room</h1>
 
-  <div>
-    <h1>Bundle: </h1>
-    @foreach (var item in @Model.Bundle)
-    {
-      <p>@item.Id</p>
-      <p>@item.Name</p>
-      <img class="gun_img" src="@item.ImageUrl"/>
-    }
+  <div class="skins">
+    <div>
+      <h1>Offers: </h1>
+      @foreach (var item in @Model.Offers)
+      {
+        <p>@item.Id</p>
+        <p>@item.Name</p>
+        <img class="gun_img" src="@item.ImageUrl"/>
+      }
+    </div>
+
+    <div>
+      <h1>Bundle: </h1>
+      @foreach (var item in @Model.Bundle)
+      {
+        <p>@item.Id</p>
+        <p>@item.Name</p>
+        <img class="gun_img" src="@item.ImageUrl"/>
+      }
+    </div>
   </div>
 
 </div>

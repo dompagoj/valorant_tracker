@@ -9,9 +9,11 @@ builder.ConfigureLogging();
 builder.Services.AddHttpClient<ValorantSkinsDBService>();
 builder.Services.AddSingleton<ValorantAuthService>();
 builder.Services.AddScoped<ValorantStoreService>();
-builder.Services.AddScoped<ValorantService>();
 
-builder.Services.AddNodeServices();
+if (!builder.Configuration.GetValue<bool>("USE_FAKE_DATA"))
+    builder.Services.AddScoped<IValorantService, ValorantService>();
+else
+    builder.Services.AddScoped<IValorantService, ValorantFakeDataService>();
 
 var app = builder.Build();
 

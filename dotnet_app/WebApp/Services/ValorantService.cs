@@ -3,7 +3,12 @@ using WebApp.DTOs;
 
 namespace WebApp.Services;
 
-public class ValorantService
+public interface IValorantService
+{
+    ValueTask<ValorantStoreDto> GetSkins();
+}
+
+public class ValorantService : IValorantService
 {
     readonly ValorantSkinsDBService _skinsDBService;
     readonly ValorantStoreService _storeService;
@@ -19,13 +24,21 @@ public class ValorantService
         _configuration = configuration;
     }
 
-    public Task<ValorantStoreDto> GetSkins() =>
-        _memoryCache.GetOrCreateAsync("SKINS", GetSkinsImpl);
-
-    async Task<ValorantStoreDto> GetSkinsImpl(ICacheEntry entry)
+    public async ValueTask<ValorantStoreDto> GetSkins()
     {
-        entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromHours(_configuration.GetValue<int>("CacheTime"));
+        var found = _memoryCache.Get<ValorantStoreDto>("SKINS");
 
+        if (found != null) return found;
+
+        var store = await GetSkinsImpl();
+
+        _memoryCache.Set("SKINS", store, TimeSpan.FromHours(_configuration.GetValue<int>("CacheTime")));
+
+        return store;
+    }
+
+    async Task<ValorantStoreDto> GetSkinsImpl()
+    {
         var allSkins = await _skinsDBService.GetAllSkins();
         var storeSkins = await _storeService.GetFromStore();
 
@@ -64,5 +77,26 @@ public class ValorantService
             });
 
         return dto;
+    }
+}
+
+public class ValorantFakeDataService : IValorantService
+{
+    public ValueTask<ValorantStoreDto> GetSkins()
+    {
+        var image =
+            "https://media.valorant-api.com/weaponskinlevels/549b06bb-4704-25ce-19d5-c9b70b10de19/displayicon.png";
+
+        var skins = Enumerable.Range(0, 4).Select(i => new ValorantSkinDto()
+        {
+            Name = $"Fake Skin {i +  1}", ImageUrl = image, OfferStartDate = DateTime.Now
+        }).ToList();
+
+
+        return ValueTask.FromResult(new ValorantStoreDto()
+        {
+            Bundle = skins,
+            Offers = skins,
+        });
     }
 }

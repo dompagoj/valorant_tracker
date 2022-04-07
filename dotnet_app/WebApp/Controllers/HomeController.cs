@@ -7,9 +7,9 @@ namespace WebApp.Controllers;
 
 public class HomeController : Controller
 {
-    readonly ValorantService _valorantService;
+    readonly IValorantService _valorantService;
 
-    public HomeController(ValorantService valorantService)
+    public HomeController(IValorantService valorantService)
     {
         _valorantService = valorantService;
     }
@@ -19,5 +19,11 @@ public class HomeController : Controller
         var data = await _valorantService.GetSkins();
 
         return View(data);
+    }
+
+    [Route("boljomir")]
+    public IActionResult Boljomir()
+    {
+        return View();
     }
 }
