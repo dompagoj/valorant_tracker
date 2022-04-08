@@ -5,7 +5,7 @@ namespace WebApp.Services;
 
 public interface IValorantService
 {
-    ValueTask<ValorantStoreDto> GetSkins();
+    Task<ValorantStoreDto> GetSkins();
 }
 
 public class ValorantService : IValorantService
@@ -24,21 +24,12 @@ public class ValorantService : IValorantService
         _configuration = configuration;
     }
 
-    public async ValueTask<ValorantStoreDto> GetSkins()
+    public Task<ValorantStoreDto> GetSkins() => _memoryCache.GetOrCreateAsync("SKINS", GetSkinsImpl);
+
+    async Task<ValorantStoreDto> GetSkinsImpl(ICacheEntry entry)
     {
-        var found = _memoryCache.Get<ValorantStoreDto>("SKINS");
+        entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromHours(_configuration.GetValue<int>("CacheTime"));
 
-        if (found != null) return found;
-
-        var store = await GetSkinsImpl();
-
-        _memoryCache.Set("SKINS", store, TimeSpan.FromHours(_configuration.GetValue<int>("CacheTime")));
-
-        return store;
-    }
-
-    async Task<ValorantStoreDto> GetSkinsImpl()
-    {
         var allSkins = await _skinsDBService.GetAllSkins();
         var storeSkins = await _storeService.GetFromStore();
 
@@ -82,7 +73,7 @@ public class ValorantService : IValorantService
 
 public class ValorantFakeDataService : IValorantService
 {
-    public ValueTask<ValorantStoreDto> GetSkins()
+    public Task<ValorantStoreDto> GetSkins()
     {
         var image =
             "https://media.valorant-api.com/weaponskinlevels/549b06bb-4704-25ce-19d5-c9b70b10de19/displayicon.png";
@@ -93,7 +84,7 @@ public class ValorantFakeDataService : IValorantService
         }).ToList();
 
 
-        return ValueTask.FromResult(new ValorantStoreDto()
+        return Task.FromResult(new ValorantStoreDto()
         {
             Bundle = skins,
             Offers = skins,
