@@ -18,6 +18,7 @@ services:
   node_app:
     container_name: valorant_node_app
     build: node_script
+    restart: always
     env_file:
       - node_script/secrets.env
     environment:
